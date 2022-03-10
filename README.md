@@ -12,8 +12,7 @@ Swift Dogstatsd is a dogstatsd implementation for the popular Vapor framework.
 Swift Dogstatsd can be installed with Swift Package Manager
 
 ```swift
-// TODO: Update for release
-.package(name: "dogstatsd", url: "https://github.com/DataDog/hackathon-swift-dogstatsd.git", .branch("master")),
+.package(name: "dogstatsd", url: "https://github.com/DataDog/swift-dogstatsd.git", .branch("master")),
 
 .target(name: "App", dependencies: [
     .product(name: "Vapor", package: "vapor"),
