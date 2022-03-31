@@ -85,7 +85,6 @@ private final class SocketHandler: ChannelInboundHandler {
     public func channelRead(context: ChannelHandlerContext, data: NIOAny) {}
     
     public func errorCaught(context: ChannelHandlerContext, error: Error) {
-        print("error: ", error)
         context.close(promise: nil)
     }
 }

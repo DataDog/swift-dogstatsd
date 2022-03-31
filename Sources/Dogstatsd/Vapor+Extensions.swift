@@ -22,7 +22,9 @@ public class AsyncDogstatsdClient: DogstatsdClient {
                 return
             }
             do {
-            try configuredSender = VaporSender(client: SocketWriteClient(on: app.eventLoopGroup, clientConfig: config), eventLoop: app.eventLoopGroup.next())
+                try configuredSender = VaporSender(client: SocketWriteClient(on: app.eventLoopGroup,
+                                                                             clientConfig: config),
+                                                   eventLoop: app.eventLoopGroup.next())
             } catch {
                 print("Warning: Failed to init dogstatsd client: \(error)")
             }
@@ -38,7 +40,6 @@ extension Request {
     public var dogstatsd: AsyncDogstatsdClient {
         return application.dogstatsd
     }
-    
 }
 
 extension Application {
@@ -54,5 +55,4 @@ extension Application {
         
         return storage[Key.self]!
     }
-    
 }
