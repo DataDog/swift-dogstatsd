@@ -1,5 +1,5 @@
 # Swift Dogstatsd
-[![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%20|%20Ubuntu%2016.04%20LTS-ff0000.svg?style=flat)](http://cocoapods.org/pods/FASwift)
+![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%20|%20Ubuntu%2016.04%20LTS-ff0000.svg?style=flat)
 [![Swift 5.3](https://img.shields.io/badge/swift-5.3-orange.svg?style=flat)](http://swift.org)
 [![Vapor 4](https://img.shields.io/badge/vapor-4.0-blue.svg?style=flat)](https://vapor.codes)
 
