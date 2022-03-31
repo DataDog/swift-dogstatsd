@@ -40,7 +40,7 @@ public enum DogstatsdMetric {
         
         case let .serviceCheck(name, status, timestamp, hostname, message):
             return "_sc|\(name)|\(status.rawValue)"
-            + timestamp.statsdFormat("|d:") { $0 }
+            + timestamp.statsdFormat("|d:") { Int($0.timeIntervalSince1970) }
             + hostname.statsdFormat("|h:") { $0 }
             + message.statsdFormat("|m:") { $0 }
             
@@ -83,7 +83,7 @@ extension DogstatsdClient {
     }
     
     public func distribution(_ name: String, value: Float64, tags: [String: String] = [:], rate: Float = 1) {
-        sender.send(metric: .histogram(name: name, value: value), tags: tags, rate: rate)
+        sender.send(metric: .distribution(name: name, value: value), tags: tags, rate: rate)
     }
     
     public func set(_ name: String, value: String, tags: [String: String] = [:], rate: Float = 1) {
