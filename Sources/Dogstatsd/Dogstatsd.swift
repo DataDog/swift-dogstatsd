@@ -41,8 +41,8 @@ public enum DogstatsdMetric {
         case let .serviceCheck(name, status, timestamp, hostname, message):
             return "_sc|\(name)|\(status.rawValue)"
             + timestamp.statsdFormat("|d:") { $0 }
-            + hostname.statsdFormat("|d:") { $0 }
-            + message.statsdFormat("|d:") { $0 }
+            + hostname.statsdFormat("|h:") { $0 }
+            + message.statsdFormat("|m:") { $0 }
             
         case let .event(title, text, timestamp, hostname, aggregationKey, priority, sourceTypeName, alertType):
             return "_e{\(title.count),\(text.count)}:\(title)|\(text)"
@@ -135,14 +135,13 @@ extension DogstatsdClient {
 }
 
 fileprivate extension Optional {
+    /// if the wrapped value is not `none` or empty, append the prefix - othwerise return empty string
     func statsdFormat<U>(_ prefix: String, format: ((Wrapped) -> U)) -> String {
-        switch self {
-        case .some(let val):
+        if let val = self {
             let formatted = "\(format(val))"
             return formatted.count > 0 ? "\(prefix)\(formatted)" : ""
-        case .none:
-            return ""
         }
+        return ""
     }
 }
 
