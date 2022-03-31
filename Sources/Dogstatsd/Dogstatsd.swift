@@ -19,7 +19,6 @@ public enum EventAlertType: String {
 }
 
 public enum DogstatsdMetric {
-    
     case count(name: String, value: Int64)
     case gauge(name: String, value: Float64)
     case histogram(name: String, value: Float64)
@@ -61,7 +60,6 @@ public protocol DogstatsdClient {
 }
 
 extension DogstatsdClient {
-    
     public func count(_ name: String, value: Int64, tags: [String: String] = [:], rate: Float = 1) {
         sender.send(metric: .count(name: name, value: value), tags: tags, rate: rate)
     }

@@ -5,7 +5,6 @@ import Foundation
 import Vapor
 
 public class AsyncDogstatsdClient: DogstatsdClient {
-    
     let app: Application
     public var sender: StatsdSender {
         guard let configuredSender = configuredSender else {
@@ -43,7 +42,6 @@ extension Request {
 }
 
 extension Application {
-    
     private struct Key: StorageKey {
         typealias Value = AsyncDogstatsdClient
     }

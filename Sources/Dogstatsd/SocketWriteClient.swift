@@ -13,7 +13,6 @@ public enum ClientConfig {
 
 // A write-only Socket client
 public class SocketWriteClient {
-    
     public let eventLoopGroup: EventLoopGroup
     private let remoteAddress: SocketAddress?
     private var channel: Channel?

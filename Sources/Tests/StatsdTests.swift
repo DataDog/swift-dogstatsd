@@ -5,7 +5,6 @@
 import XCTest
 
 final class AppTests: XCTestCase {
-    
     func testDogStatsd() {
         let sender = TestDogStatsdClient()
         
@@ -102,7 +101,6 @@ final class AppTests: XCTestCase {
 }
 
 class TestStatsdSender: StatsdSender {
-    
     var encodedMetric: String = ""
     
     func sendRaw(metric: String) {
