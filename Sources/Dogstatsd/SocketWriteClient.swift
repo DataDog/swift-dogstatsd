@@ -8,13 +8,14 @@ import NIO
 public enum ClientConfig {
     case udp(address: String, port: Int)
     case uds(path: String)
+    case disabled
 }
 
 // A write-only Socket client
 public class SocketWriteClient {
     
     public let eventLoopGroup: EventLoopGroup
-    private let remoteAddress: SocketAddress
+    private let remoteAddress: SocketAddress?
     private var channel: Channel?
     private let config: ClientConfig
     
@@ -27,10 +28,15 @@ public class SocketWriteClient {
             remoteAddress = try SocketAddress.makeAddressResolvingHost(host, port: sendPort)
         case .uds(let sendPath):
             remoteAddress = try SocketAddress(unixDomainSocketPath: sendPath)
+        case .disabled:
+            remoteAddress = nil
         }
     }
     
     func send(payload: String) {
+        guard let remoteAddress = remoteAddress else {
+            return
+        }
         
         if let chan = self.channel {
             let buffer = chan.allocator.buffer(string: payload)
@@ -41,7 +47,7 @@ public class SocketWriteClient {
         let bootstrap = DatagramBootstrap(group: eventLoopGroup)
             .channelOption(ChannelOptions.socketOption(.so_reuseaddr), value: 1)
             .channelInitializer { channel in
-                channel.pipeline.addHandler(SocketHandler(remoteAddress: self.remoteAddress, payload: payload))
+                channel.pipeline.addHandler(SocketHandler(remoteAddress: remoteAddress, payload: payload))
         }
         
         switch config {
@@ -53,6 +59,7 @@ public class SocketWriteClient {
             _ = bootstrap.bind(unixDomainSocketPath: "/tmp/swiftdogstatsdnoopsock", cleanupExistingSocketFile: true).map { channel in
                 self.channel = channel
             }
+        case .disabled: break
         }
     }
 }

@@ -19,7 +19,7 @@ class VaporSender: StatsdSender {
     
     func sendRaw(metric: String) {
         eventLoop.execute {
-            _ = self.client.send(payload: metric)
+            self.client.send(payload: metric)
         }
     }
 }
