@@ -39,8 +39,8 @@ public class SocketWriteClient {
         
         if let chan = self.channel {
             let buffer = chan.allocator.buffer(string: payload)
-            let envolope = AddressedEnvelope<ByteBuffer>(remoteAddress: remoteAddress, data: buffer)
-            chan.writeAndFlush(envolope, promise: nil)
+            let envelope = AddressedEnvelope<ByteBuffer>(remoteAddress: remoteAddress, data: buffer)
+            chan.writeAndFlush(envelope, promise: nil)
             return
         }
         let bootstrap = DatagramBootstrap(group: eventLoopGroup)
@@ -51,10 +51,12 @@ public class SocketWriteClient {
         
         switch config {
         case .udp:
+            // In order to send UDP packets, NIO requires us to also bind to a recieve socket - this is a workaround
             _ = bootstrap.bind(host: "0.0.0.0", port: 0).map { channel in
                 self.channel = channel
             }
         case .uds:
+            // (like above) In order to send UDS packets, NIO requires us to also bind to a recieve socket - this is a workaround
             _ = bootstrap.bind(unixDomainSocketPath: "/tmp/swiftdogstatsdnoopsock", cleanupExistingSocketFile: true).map { channel in
                 self.channel = channel
             }
@@ -77,8 +79,8 @@ private final class SocketHandler: ChannelInboundHandler {
     
     public func channelActive(context: ChannelHandlerContext) {
         let buffer = context.channel.allocator.buffer(string: payload)
-        let envolope = AddressedEnvelope<ByteBuffer>(remoteAddress: remoteAddress, data: buffer)
-        context.writeAndFlush(self.wrapOutboundOut(envolope), promise: nil)
+        let envelope = AddressedEnvelope<ByteBuffer>(remoteAddress: remoteAddress, data: buffer)
+        context.writeAndFlush(self.wrapOutboundOut(envelope), promise: nil)
     }
     
     public func channelRead(context: ChannelHandlerContext, data: NIOAny) {}

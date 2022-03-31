@@ -133,7 +133,7 @@ extension DogstatsdClient {
 }
 
 fileprivate extension Optional {
-    /// if the wrapped value is not `none` or empty, append the prefix - othwerise return empty string
+    /// if the wrapped value is not `none` or empty, prepend the prefix - otherwise return empty string
     func statsdFormat<U>(_ prefix: String, format: ((Wrapped) -> U)) -> String {
         if let val = self {
             let formatted = "\(format(val))"
