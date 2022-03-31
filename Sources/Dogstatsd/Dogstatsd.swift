@@ -45,7 +45,7 @@ public enum DogstatsdMetric {
             + message.statsdFormat("|m:") { $0 }
             
         case let .event(title, text, timestamp, hostname, aggregationKey, priority, sourceTypeName, alertType):
-            return "_e{\(title.count),\(text.count)}:\(title)|\(text)"
+            return "_e{\(title.bytesCount),\(text.bytesCount)}:\(title)|\(text)"
             + timestamp.statsdFormat("|d:") { $0.timeIntervalSince1970.toMs }
             + hostname.statsdFormat("|h:") { $0 }
             + aggregationKey.statsdFormat("|k:") { $0 }
