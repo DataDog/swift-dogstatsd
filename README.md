@@ -3,13 +3,13 @@
 [![Swift 5.3](https://img.shields.io/badge/swift-5.3-orange.svg?style=flat)](http://swift.org)
 [![Vapor 4](https://img.shields.io/badge/vapor-4.0-blue.svg?style=flat)](https://vapor.codes)
 
-##
+## Overview
 
 Swift Dogstatsd is a dogstatsd implementation for the popular Vapor framework. 
 
 
 ## Installation
-Swift Dogstatsd can be installed with Swift Package Manager
+To install Swift Dogstatsd, use Swift Package Manager:
 
 ```swift
 .package(name: "dogstatsd", url: "https://github.com/DataDog/swift-dogstatsd.git", .branch("master")),
@@ -22,7 +22,7 @@ Swift Dogstatsd can be installed with Swift Package Manager
 
 ## Usage
 
-### Configure
+### Configuration
 
 In `configure.swift`:
 
@@ -41,7 +41,7 @@ func configure(_ app: Application) throws {
 
 ### Usage
 
-`dogstatsd` is available on both `Application` and `Request`
+`dogstatsd` is available on both `Application` and `Request`.
 
 ```swift
 import Vapor
