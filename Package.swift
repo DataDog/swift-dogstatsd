@@ -13,7 +13,7 @@ let package = Package(
                 targets: ["Dogstatsd"]),
         ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.52.1"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
     ],
     targets: [
         .target(
