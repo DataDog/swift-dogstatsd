@@ -70,8 +70,8 @@ final class AppTests: XCTestCase {
                             status: .unknown,
                             hostname: "some-host.com",
                             message: "Important message",
-                            tags: ["red": "balloon", "green": "ham"])
-        XCTAssertEqual(sender.encodedMetric, "_sc|neat-service|3|h:some-host.com|m:Important message|#red:balloon,green:ham")
+                            tags: ["red": "balloon"])
+        XCTAssertEqual(sender.encodedMetric, "_sc|neat-service|3|h:some-host.com|m:Important message|#red:balloon")
         
         // count
         sender.increment("some.count")
