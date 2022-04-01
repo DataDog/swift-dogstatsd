@@ -93,11 +93,6 @@ final class AppTests: XCTestCase {
         sender.set("set", value: "123", tags: ["some": "tag"])
         XCTAssertEqual(sender.encodedMetric, "set:123|s|#some:tag")
     }
-    
-    func testCountBytes() {
-        XCTAssertEqual("abc".bytesCount, 3)
-        XCTAssertEqual("😂".bytesCount, 4)
-    }
 }
 
 class TestStatsdSender: StatsdSender {
