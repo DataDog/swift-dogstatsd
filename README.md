@@ -16,7 +16,7 @@ To install Swift Dogstatsd, use Swift Package Manager:
 
 .target(name: "App", dependencies: [
     .product(name: "Vapor", package: "vapor"),
-    .product(name: "Dogstatsd", package: "dogstatsd")
+    .product(name: "Dogstatsd", package: "swift-dogstatsd")
 ])
 ```
 
