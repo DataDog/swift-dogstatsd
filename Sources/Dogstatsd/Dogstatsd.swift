@@ -60,50 +60,101 @@ public protocol DogstatsdClient {
 }
 
 extension DogstatsdClient {
-    public func count(_ name: String, value: Int64, tags: [String: String] = [:], rate: Float = 1) {
+    
+    public func count(_ name: String, value: Int64, tags: [String] = [], rate: Float = 1) {
         sender.send(metric: .count(name: name, value: value), tags: tags, rate: rate)
     }
     
-    public func increment(_ name: String, tags: [String: String] = [:], rate: Float = 1) {
+    public func increment(_ name: String, tags: [String] = [], rate: Float = 1) {
         count(name, value: 1, tags: tags, rate: rate)
     }
     
-    public func decrement(_ name: String, tags: [String: String] = [:], rate: Float = 1) {
+    public func decrement(_ name: String, tags: [String] = [], rate: Float = 1) {
         count(name, value: -1, tags: tags, rate: rate)
     }
     
-    public func gauge(_ name: String, value: Float64, tags: [String: String] = [:], rate: Float = 1) {
+    public func gauge(_ name: String, value: Float64, tags: [String] = [], rate: Float = 1) {
         sender.send(metric: .gauge(name: name, value: value), tags: tags, rate: rate)
     }
     
-    public func histogram(_ name: String, value: Float64, tags: [String: String] = [:], rate: Float = 1) {
+    public func histogram(_ name: String, value: Float64, tags: [String] = [], rate: Float = 1) {
         sender.send(metric: .histogram(name: name, value: value), tags: tags, rate: rate)
     }
     
-    public func distribution(_ name: String, value: Float64, tags: [String: String] = [:], rate: Float = 1) {
+    public func distribution(_ name: String, value: Float64, tags: [String] = [], rate: Float = 1) {
         sender.send(metric: .distribution(name: name, value: value), tags: tags, rate: rate)
     }
     
-    public func set(_ name: String, value: String, tags: [String: String] = [:], rate: Float = 1) {
+    public func set(_ name: String, value: String, tags: [String] = [], rate: Float = 1) {
         sender.send(metric: .set(name: name, value: value), tags: tags, rate: rate)
     }
     
-    public func timing(_ name: String, value: TimeInterval, tags: [String: String] = [:], rate: Float = 1) {
+    public func timing(_ name: String, value: TimeInterval, tags: [String] = [], rate: Float = 1) {
         sender.send(metric: .timing(name: name, value: value), tags: tags, rate: rate)
     }
     
     public func serviceCheck(name: String,
-                      status: ServiceCheckStatus,
-                      timestamp: Date? = nil,
-                      hostname: String? = nil,
-                      message: String? = nil,
-                      tags: [String: String] = [:]) {
+                             status: ServiceCheckStatus,
+                             timestamp: Date? = nil,
+                             hostname: String? = nil,
+                             message: String? = nil,
+                             tags: [String] = []) {
         sender.send(metric: .serviceCheck(name: name,
                                           status: status,
                                           timestamp: timestamp,
                                           hostname: hostname,
                                           message: message),
                     tags: tags,
+                    rate: 1)
+    }
+    
+    // MARK: Convenience method overloads to support a dictionary of tags
+    
+    public func count(_ name: String, value: Int64, tags: [String: String], rate: Float = 1) {
+        sender.send(metric: .count(name: name, value: value), tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    public func increment(_ name: String, tags: [String: String], rate: Float = 1) {
+        count(name, value: 1, tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    public func decrement(_ name: String, tags: [String: String], rate: Float = 1) {
+        count(name, value: -1, tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    public func gauge(_ name: String, value: Float64, tags: [String: String], rate: Float = 1) {
+        sender.send(metric: .gauge(name: name, value: value), tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    public func histogram(_ name: String, value: Float64, tags: [String: String], rate: Float = 1) {
+        sender.send(metric: .histogram(name: name, value: value), tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    public func distribution(_ name: String, value: Float64, tags: [String: String], rate: Float = 1) {
+        sender.send(metric: .distribution(name: name, value: value), tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    public func set(_ name: String, value: String, tags: [String: String], rate: Float = 1) {
+        sender.send(metric: .set(name: name, value: value), tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    public func timing(_ name: String, value: TimeInterval, tags: [String: String], rate: Float = 1) {
+        sender.send(metric: .timing(name: name, value: value), tags: dictToList(tags: tags), rate: rate)
+    }
+    
+    
+    public func serviceCheck(name: String,
+                             status: ServiceCheckStatus,
+                             timestamp: Date? = nil,
+                             hostname: String? = nil,
+                             message: String? = nil,
+                             tags: [String: String]) {
+        sender.send(metric: .serviceCheck(name: name,
+                                          status: status,
+                                          timestamp: timestamp,
+                                          hostname: hostname,
+                                          message: message),
+                    tags: dictToList(tags: tags),
                     rate: 1)
     }
     
@@ -115,7 +166,7 @@ extension DogstatsdClient {
                priority: EventPriority? = nil,
                sourceTypeName: String? = nil,
                alertType: EventAlertType? = nil,
-               tags: [String: String] = [:]) {
+               tags: [String] = []) {
         
         sender.send(metric: .event(title: title,
                                    text: text,
@@ -129,6 +180,10 @@ extension DogstatsdClient {
                     rate: 1)
         
         
+    }
+    
+    private func dictToList(tags: [String: String]) -> [String] {
+        return tags.map { "\($0):\($1)" }
     }
 }
 

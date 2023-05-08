@@ -50,7 +50,7 @@ func routes(_ app: Application) throws {
 
     app.get { req -> String in
 
-        req.dogstatsd.increment("custom.swift.metric", tags: ["env": "prod"])
+        req.dogstatsd.increment("custom.swift.metric", tags: ["env:prod"])
 
         return "It works!"
     }
