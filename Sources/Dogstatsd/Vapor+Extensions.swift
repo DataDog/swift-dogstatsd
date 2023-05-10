@@ -13,6 +13,20 @@ public class AsyncDogstatsdClient: DogstatsdClient {
         return configuredSender
     }
     
+    var globalTags: [String] {
+        [
+            "DD_ENV": "env",
+            "DD_SERVICE": "service",
+            "DD_VERSION": "version",
+            "DD_ENTITY_ID": "dd.internal.entity_id"
+        ].compactMap { envVar, tag in
+            guard let val = Environment.get(envVar) else {
+                return nil
+            }
+            return "\(tag):\(val)"
+        }
+    }
+    
     private var configuredSender: StatsdSender?
     
     public var config: ClientConfig? {
@@ -23,7 +37,8 @@ public class AsyncDogstatsdClient: DogstatsdClient {
             do {
                 try configuredSender = VaporSender(client: SocketWriteClient(on: app.eventLoopGroup,
                                                                              clientConfig: config),
-                                                   eventLoop: app.eventLoopGroup.next())
+                                                   eventLoop: app.eventLoopGroup.next(),
+                                                   globalTags: globalTags)
             } catch {
                 print("Warning: Failed to init dogstatsd client: \(error)")
             }
@@ -33,6 +48,7 @@ public class AsyncDogstatsdClient: DogstatsdClient {
     init(app: Application) {
         self.app = app
     }
+    
 }
 
 extension Request {

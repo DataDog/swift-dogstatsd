@@ -5,24 +5,25 @@ import Foundation
 
 /// A dogstatsd sender interface.
 public protocol StatsdSender {
+    var globalTags: [String] { get }
+    
     func sendRaw(metric: String)
 }
 
 extension StatsdSender {
-    public func send(metric: DogstatsdMetric, tags: [String: String], rate: Float) {
+    public func send(metric: DogstatsdMetric, tags: [String], rate: Float) {
         guard shouldSample(rate: rate) else {
             return
         }
         
-        if tags.isEmpty {
+        let allTags = globalTags + tags
+        
+        if allTags.isEmpty {
             sendRaw(metric: metric.toWire)
             return
         }
             
-        let wireTags = tags.reduce("#") { reduced, kv in
-            "\(reduced)\(kv.key):\(kv.value),"
-        }.dropLast()
-        
+        let wireTags = "#\(allTags.joined(separator: ","))"
         sendRaw(metric: "\(metric.toWire)|\(wireTags)")
     }
     
