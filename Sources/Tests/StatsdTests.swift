@@ -120,7 +120,7 @@ final class AppTests: XCTestCase {
         XCTAssertEqual(client.encodedMetric, "set:123|s|#some:tag")
     }
     
-    func testGloalTags() {
+    func testGlobalTags() {
         let client = TestDogStatsdClient()
         client.testSender.globalTags = ["foo:bar"]
         client.increment("some.count")

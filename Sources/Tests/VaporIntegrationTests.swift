@@ -32,7 +32,13 @@ final class VaporIntegrationTests: XCTestCase {
     
     func testGlobalTags() throws {
         let app = Application(.testing)
-        defer { app.shutdown() }
+        defer {
+            setenv("DD_ENV", "", 1)
+            setenv("DD_VERSION", "", 1)
+            setenv("DD_SERVICE", "", 1)
+            setenv("DD_ENTITY_ID", "", 1)
+            app.shutdown()
+        }
         
         XCTAssertEqual(app.dogstatsd.globalTags, [])
         
@@ -51,10 +57,7 @@ final class VaporIntegrationTests: XCTestCase {
         XCTAssertEqual(app.dogstatsd.globalTags.count, 4)
         XCTAssertTrue(app.dogstatsd.globalTags.contains("dd.internal.entity_id:12345"))
         
-        setenv("DD_ENV", "", 1)
-        setenv("DD_VERSION", "", 1)
-        setenv("DD_SERVICE", "", 1)
-        setenv("DD_ENTITY_ID", "", 1)
+       
     }
 }
 
