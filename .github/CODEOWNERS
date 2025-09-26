@@ -4,6 +4,3 @@
 
 
 *                     @DataDog/agent-metrics-logs
-
-# Documentation
-*.md                  @DataDog/documentation
