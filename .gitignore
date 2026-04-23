@@ -9,4 +9,3 @@ DerivedData/
 db.sqlite
 .swiftpm
 Package.pins
-Package.resolved

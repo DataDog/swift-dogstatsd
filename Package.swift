@@ -22,9 +22,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", exact: "2.82.0"),
-        // Vapor 4.117.x otherwise resolves AsyncKit 1.17.0, which fails on Swift 6.1/6.2
-        // due to MemberImportVisibility issues in transitive collection types.
-        .package(url: "https://github.com/vapor/async-kit.git", exact: "1.20.0"),
         .package(url: "https://github.com/vapor/vapor.git", exact: "4.117.2"),
     ],
     targets: [
@@ -47,7 +44,6 @@ let package = Package(
             name: "DogstatsdVapor",
             dependencies: [
                 .target(name: "DogstatsdCore"),
-                .product(name: "AsyncKit", package: "async-kit"),
                 .product(name: "Vapor", package: "vapor"),
             ],
             path: "Sources/DogstatsdVapor"
