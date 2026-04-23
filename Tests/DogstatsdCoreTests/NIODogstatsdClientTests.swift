@@ -1,4 +1,4 @@
-@testable import Dogstatsd
+@testable import DogstatsdCore
 import NIO
 import XCTest
 

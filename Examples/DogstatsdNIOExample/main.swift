@@ -1,4 +1,4 @@
-import Dogstatsd
+import DogstatsdCore
 import Foundation
 import NIOPosix
 

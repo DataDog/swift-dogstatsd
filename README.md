@@ -1,16 +1,17 @@
 # Swift Dogstatsd
 ![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%2B-ff0000.svg?style=flat)
-[![Swift 6](https://img.shields.io/badge/swift-6.0%2B-orange.svg?style=flat)](https://swift.org)
-[![Vapor 4.121.4](https://img.shields.io/badge/vapor-4.121.4-blue.svg?style=flat)](https://vapor.codes)
+[![Swift 5.9+](https://img.shields.io/badge/swift-5.9%2B-orange.svg?style=flat)](https://swift.org)
+[![Vapor 4.117.2](https://img.shields.io/badge/vapor-4.117.2-blue.svg?style=flat)](https://vapor.codes)
 
 ## Overview
 
-Swift Dogstatsd is a DogStatsD client with two library products:
+Swift Dogstatsd is a DogStatsD client with three library products:
 
-- `Dogstatsd`: the core NIO-backed client and metric API.
+- `DogstatsdCore`: the pure NIO-backed client and metric API.
 - `DogstatsdVapor`: Vapor-specific integration on top of the core client.
+- `Dogstatsd`: the backward-compatible compatibility product that re-exports the historical combined surface.
 
-The current package manifest targets modern Swift 6 toolchains and is validated locally with Swift `6.2.4`.
+The current package manifest supports Swift `5.9+` and is validated in CI on Swift `5.9` and `6.2`.
 
 
 ## Installation
@@ -20,13 +21,23 @@ Add Swift Dogstatsd with Swift Package Manager:
 .package(url: "https://github.com/DataDog/swift-dogstatsd.git", from: "1.0.0"),
 ```
 
+### Backward-Compatible Vapor Surface
+
+Existing users can keep depending on `Dogstatsd` and `import Dogstatsd`:
+
+```swift
+.target(name: "App", dependencies: [
+    .product(name: "Dogstatsd", package: "swift-dogstatsd")
+])
+```
+
 ### Core NIO Client
 
 Use only the core product if you want the DogStatsD client and metric APIs:
 
 ```swift
 .target(name: "App", dependencies: [
-    .product(name: "Dogstatsd", package: "swift-dogstatsd")
+    .product(name: "DogstatsdCore", package: "swift-dogstatsd")
 ])
 ```
 
@@ -49,7 +60,7 @@ Note: the package is split into separate products, but SwiftPM still resolves pa
 The core package works on its own without Vapor:
 
 ```swift
-import Dogstatsd
+import DogstatsdCore
 import NIOPosix
 
 let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
@@ -122,15 +133,6 @@ Both examples default to `DOGSTATSD_HOST=127.0.0.1` and `DOGSTATSD_PORT=8125`.
 ## Devcontainer
 
 This repository includes a VS Code devcontainer in [.devcontainer/devcontainer.json](/Users/brian.floersch/dev/swift-dogstatsd/.devcontainer/devcontainer.json).
-
-After opening the repo in the container, the post-create step runs:
-
-```bash
-bash .devcontainer/post-create.sh
-```
-
-The container uses its own SwiftPM scratch path so Linux container builds do not corrupt the host macOS `.build` database.
-It also normalizes GitHub remotes to HTTPS during setup so SwiftPM does not depend on SSH keys inside the container.
 
 VS Code workspace helpers are also included in [launch.json](/Users/brian.floersch/dev/swift-dogstatsd/.vscode/launch.json) and [tasks.json](/Users/brian.floersch/dev/swift-dogstatsd/.vscode/tasks.json) for:
 

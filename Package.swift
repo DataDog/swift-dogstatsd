@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
@@ -12,32 +12,46 @@ let package = Package(
             targets: ["Dogstatsd"]
         ),
         .library(
+            name: "DogstatsdCore",
+            targets: ["DogstatsdCore"]
+        ),
+        .library(
             name: "DogstatsdVapor",
             targets: ["DogstatsdVapor"]
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio.git", exact: "2.99.0"),
-        .package(url: "https://github.com/vapor/vapor.git", exact: "4.121.4"),
+        .package(url: "https://github.com/apple/swift-nio.git", exact: "2.82.0"),
+        .package(url: "https://github.com/vapor/vapor.git", exact: "4.117.2"),
     ],
     targets: [
         .target(
-            name: "Dogstatsd",
+            name: "DogstatsdCore",
             dependencies: [
                 .product(name: "NIO", package: "swift-nio"),
-            ]
+            ],
+            path: "Sources/Dogstatsd"
+        ),
+        .target(
+            name: "Dogstatsd",
+            dependencies: [
+                .target(name: "DogstatsdCore"),
+                .target(name: "DogstatsdVapor"),
+            ],
+            path: "Sources/DogstatsdCompatibility"
         ),
         .target(
             name: "DogstatsdVapor",
             dependencies: [
-                .target(name: "Dogstatsd"),
+                .target(name: "DogstatsdCore"),
                 .product(name: "Vapor", package: "vapor"),
-            ]
+            ],
+            path: "Sources/DogstatsdVapor"
         ),
         .executableTarget(
             name: "DogstatsdNIOExample",
             dependencies: [
-                .target(name: "Dogstatsd"),
+                .target(name: "DogstatsdCore"),
                 .product(name: "NIOPosix", package: "swift-nio"),
             ],
             path: "Examples/DogstatsdNIOExample"
@@ -53,13 +67,14 @@ let package = Package(
         .testTarget(
             name: "DogstatsdCoreTests",
             dependencies: [
-                .target(name: "Dogstatsd"),
+                .target(name: "DogstatsdCore"),
             ],
             path: "Tests/DogstatsdCoreTests"
         ),
         .testTarget(
             name: "DogstatsdVaporTests",
             dependencies: [
+                .target(name: "DogstatsdCore"),
                 .target(name: "Dogstatsd"),
                 .target(name: "DogstatsdVapor"),
                 .product(name: "XCTVapor", package: "vapor"),
@@ -67,7 +82,7 @@ let package = Package(
             path: "Tests/DogstatsdVaporTests"
         )
     ],
-    swiftLanguageModes: [
-        .v6
+    swiftLanguageVersions: [
+        .v5
     ]
 )

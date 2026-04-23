@@ -7,16 +7,36 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  linux:
     strategy:
-        matrix:
-          os: [ubuntu-latest, macos-latest]
+      fail-fast: false
+      matrix:
+        include:
+          - swift: 5.9.2
+            image: swift:5.9.2-jammy
+          - swift: 6.2
+            image: swift:6.2-noble
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    container: ${{ matrix.image }}
 
     steps:
-    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: swift test -v
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - name: Show Swift Version
+        run: swift --version
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test -v
+
+  macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - name: Show Swift Version
+        run: swift --version
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test -v

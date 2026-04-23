@@ -34,7 +34,7 @@ public final class SocketWriteClient: @unchecked Sendable {
         }
     }
     
-    package func send(payload: String) {
+    func send(payload: String) {
         guard let remoteAddress = remoteAddress else {
             return
         }
