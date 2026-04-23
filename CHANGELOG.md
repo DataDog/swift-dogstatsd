@@ -3,6 +3,7 @@ CHANGELOG
 
 # Unreleased
 * Modernized the package for Swift 6 toolchains and updated the Vapor dependency.
+* Split the package into `Dogstatsd` and `DogstatsdVapor` library products.
 * Updated the Vapor integration to satisfy modern sendability requirements.
 * Moved tests into a standard SwiftPM layout and expanded coverage.
 * Added agent guidance for working in this repository.

@@ -2,7 +2,6 @@
 /// This product includes software developed at Datadog (https://www.datadoghq.com/)  Copyright 2022 Datadog, Inc.
 
 import Foundation
-import Vapor
 import NIO
 
 public enum ClientConfig {
@@ -32,7 +31,7 @@ public final class SocketWriteClient: @unchecked Sendable {
         }
     }
     
-    func send(payload: String) {
+    package func send(payload: String) {
         guard let remoteAddress = remoteAddress else {
             return
         }

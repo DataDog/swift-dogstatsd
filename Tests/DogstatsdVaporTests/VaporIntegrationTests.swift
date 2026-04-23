@@ -1,4 +1,5 @@
 @testable import Dogstatsd
+@testable import DogstatsdVapor
 import Foundation
 import Vapor
 import XCTVapor

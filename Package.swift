@@ -11,24 +11,44 @@ let package = Package(
             name: "Dogstatsd",
             targets: ["Dogstatsd"]
         ),
+        .library(
+            name: "DogstatsdVapor",
+            targets: ["DogstatsdVapor"]
+        ),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-nio.git", exact: "2.99.0"),
         .package(url: "https://github.com/vapor/vapor.git", exact: "4.121.4"),
     ],
     targets: [
         .target(
             name: "Dogstatsd",
             dependencies: [
+                .product(name: "NIO", package: "swift-nio"),
+            ]
+        ),
+        .target(
+            name: "DogstatsdVapor",
+            dependencies: [
+                .target(name: "Dogstatsd"),
                 .product(name: "Vapor", package: "vapor"),
             ]
         ),
         .testTarget(
-            name: "DogstatsdTests",
+            name: "DogstatsdCoreTests",
             dependencies: [
                 .target(name: "Dogstatsd"),
+            ],
+            path: "Tests/DogstatsdCoreTests"
+        ),
+        .testTarget(
+            name: "DogstatsdVaporTests",
+            dependencies: [
+                .target(name: "Dogstatsd"),
+                .target(name: "DogstatsdVapor"),
                 .product(name: "XCTVapor", package: "vapor"),
             ],
-            path: "Tests/DogstatsdTests"
+            path: "Tests/DogstatsdVaporTests"
         )
     ],
     swiftLanguageModes: [
