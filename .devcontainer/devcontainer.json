@@ -1,7 +1,7 @@
 {
   "name": "swift-dogstatsd",
   "image": "swift:6.2-noble",
-  "postCreateCommand": "git config --global --unset-all url.git@github.com:.insteadof || true && git config --global url.\"https://github.com/\".insteadOf git@github.com: && rm -rf .build-devcontainer && swift build --scratch-path .build-devcontainer && swift test --scratch-path .build-devcontainer",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
       "settings": {

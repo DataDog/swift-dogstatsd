@@ -126,7 +126,7 @@ This repository includes a VS Code devcontainer in [.devcontainer/devcontainer.j
 After opening the repo in the container, the post-create step runs:
 
 ```bash
-rm -rf .build-devcontainer && swift build --scratch-path .build-devcontainer && swift test --scratch-path .build-devcontainer
+bash .devcontainer/post-create.sh
 ```
 
 The container uses its own SwiftPM scratch path so Linux container builds do not corrupt the host macOS `.build` database.

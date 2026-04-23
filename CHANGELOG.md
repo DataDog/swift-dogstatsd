@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-# Unreleased
+# 1.1.0 / 2026-04-23
 * Modernized the package for Swift 6 toolchains and updated the Vapor dependency.
 * Split the package into `Dogstatsd` and `DogstatsdVapor` library products.
 * Updated the Vapor integration to satisfy modern sendability requirements.
