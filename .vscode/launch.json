@@ -5,13 +5,13 @@
       "name": "Run NIO Example",
       "type": "node-terminal",
       "request": "launch",
-      "command": "swift run --scratch-path .build-devcontainer DogstatsdNIOExample"
+      "command": "swift run --package-path Examples/DogstatsdNIOExample --scratch-path .build-nio-example"
     },
     {
       "name": "Run Vapor Example",
       "type": "node-terminal",
       "request": "launch",
-      "command": "swift run --scratch-path .build-devcontainer DogstatsdVaporExample"
+      "command": "swift run --package-path Examples/DogstatsdVaporExample --scratch-path .build-vapor-example"
     }
   ]
 }

@@ -24,8 +24,8 @@ jobs:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
       - name: Show Swift Version
         run: swift --version
-      - name: Build
-        run: swift build -v
+      - name: Build Core Package
+        run: swift build -v --product DogstatsdCore
       - name: Run tests
         run: swift test -v
 
@@ -36,7 +36,24 @@ jobs:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
       - name: Show Swift Version
         run: swift --version
-      - name: Build
-        run: swift build -v
+      - name: Build Core Package
+        run: swift build -v --product DogstatsdCore
       - name: Run tests
         run: swift test -v
+
+  compatibility:
+    runs-on: ubuntu-latest
+    container: swift:5.9.2-jammy
+
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        with:
+          fetch-depth: 0
+      - name: Show Swift Version
+        run: swift --version
+      - name: Run Vapor compatibility package tests
+        run: swift test -v --package-path Compatibility/VaporCompatibility
+      - name: Build NIO example package
+        run: swift build -v --package-path Examples/DogstatsdNIOExample
+      - name: Build Vapor example package
+        run: swift build -v --package-path Examples/DogstatsdVaporExample

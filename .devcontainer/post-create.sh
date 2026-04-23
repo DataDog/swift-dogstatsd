@@ -13,5 +13,5 @@ git config --global url."https://github.com/".insteadOf git@github.com:
 # path-sensitive PCH/SwiftShims failures when contributors switch contexts.
 rm -rf .build-devcontainer
 
-swift build --scratch-path .build-devcontainer
+swift build --scratch-path .build-devcontainer --product DogstatsdCore
 swift test --scratch-path .build-devcontainer

@@ -13,6 +13,7 @@ CHANGELOG
 * Corrected DogStatsD sample-rate, event, and service-check wire encoding.
 * Hardened socket reconnection and made the Vapor wrapper safe before configuration.
 * Added explicit NIO client shutdown support so short-lived processes and the NIO example flush metrics before exit.
+* Moved Vapor integration tests and example apps into separate local packages so the root package keeps Swift 5-friendly core unit tests and loose dependency ranges.
 
 # 1.0.1 / 2023-05-10
 * Added unified service tagging.

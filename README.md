@@ -108,10 +108,16 @@ func routes(_ app: Application) throws {
 
 ## Testing
 
-Run the test suite with:
+Run the core unit test suite from the root package with:
 
 ```bash
 swift test
+```
+
+Vapor integration and backward-compatibility checks live in a separate local package so the root test graph stays Swift-5-friendly and focused on the core package:
+
+```bash
+swift test --package-path Compatibility/VaporCompatibility
 ```
 
 ## Example Apps
@@ -124,8 +130,8 @@ Two executable example apps are included for local verification and contributor 
 Run them with:
 
 ```bash
-swift run DogstatsdNIOExample
-swift run DogstatsdVaporExample
+swift run --package-path Examples/DogstatsdNIOExample
+swift run --package-path Examples/DogstatsdVaporExample
 ```
 
 Both examples default to `DOGSTATSD_HOST=127.0.0.1` and `DOGSTATSD_PORT=8125`.
@@ -138,6 +144,7 @@ VS Code workspace helpers are also included in [launch.json](/Users/brian.floers
 
 - building the package
 - running the unit tests
+- running the Vapor compatibility package
 - running the NIO example app
 - running the Vapor example app
 
