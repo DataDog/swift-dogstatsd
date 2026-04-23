@@ -12,7 +12,7 @@ public enum ClientConfig {
 }
 
 // A write-only Socket client
-public class SocketWriteClient {
+public final class SocketWriteClient: @unchecked Sendable {
     public let eventLoopGroup: EventLoopGroup
     private let remoteAddress: SocketAddress?
     private var channel: Channel?
@@ -65,7 +65,7 @@ public class SocketWriteClient {
     }
 }
 
-private final class SocketHandler: ChannelInboundHandler {
+private final class SocketHandler: ChannelInboundHandler, @unchecked Sendable {
     public typealias InboundIn = AddressedEnvelope<ByteBuffer>
     public typealias OutboundOut = AddressedEnvelope<ByteBuffer>
     

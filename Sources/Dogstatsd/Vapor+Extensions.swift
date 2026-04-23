@@ -4,7 +4,7 @@
 import Foundation
 import Vapor
 
-public class AsyncDogstatsdClient: DogstatsdClient {
+public final class AsyncDogstatsdClient: DogstatsdClient, @unchecked Sendable {
     let app: Application
     public var sender: StatsdSender {
         guard let configuredSender = configuredSender else {

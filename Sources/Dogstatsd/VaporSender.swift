@@ -5,7 +5,7 @@ import Foundation
 import Vapor
 
 /// A vapor specific non-blocking dogstatsd sender.
-class VaporSender: StatsdSender {
+final class VaporSender: StatsdSender, @unchecked Sendable {
     var globalTags: [String]
     
     private let client: SocketWriteClient
@@ -20,8 +20,9 @@ class VaporSender: StatsdSender {
     }
     
     func sendRaw(metric: String) {
+        let client = self.client
         eventLoop.execute {
-            self.client.send(payload: metric)
+            client.send(payload: metric)
         }
     }
 }

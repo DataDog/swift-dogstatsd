@@ -1,24 +1,28 @@
 # Swift Dogstatsd
-![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%20|%20Ubuntu%2016.04%20LTS-ff0000.svg?style=flat)
-[![Swift 5.3](https://img.shields.io/badge/swift-5.3-orange.svg?style=flat)](http://swift.org)
-[![Vapor 4](https://img.shields.io/badge/vapor-4.0-blue.svg?style=flat)](https://vapor.codes)
+![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%2B-ff0000.svg?style=flat)
+[![Swift 6](https://img.shields.io/badge/swift-6.0%2B-orange.svg?style=flat)](https://swift.org)
+[![Vapor 4.121.4](https://img.shields.io/badge/vapor-4.121.4-blue.svg?style=flat)](https://vapor.codes)
 
 ## Overview
 
-Swift Dogstatsd is a dogstatsd implementation for the popular Vapor framework. 
+Swift Dogstatsd is a DogStatsD client for Vapor applications.
+
+The current package manifest targets modern Swift 6 toolchains and pins the Vapor dependency graph to the latest verified Vapor 4 release line.
 
 
 ## Installation
-To install Swift Dogstatsd, use Swift Package Manager:
+Add Swift Dogstatsd with Swift Package Manager:
 
 ```swift
-.package(name: "dogstatsd", url: "https://github.com/DataDog/swift-dogstatsd.git", from: "1.0.0")),
+.package(url: "https://github.com/DataDog/swift-dogstatsd.git", from: "1.0.0"),
 
 .target(name: "App", dependencies: [
     .product(name: "Vapor", package: "vapor"),
-    .product(name: "Dogstatsd", package: "swift-dogstatsd")
+    .product(name: "Dogstatsd", package: "dogstatsd")
 ])
 ```
+
+Development in this repository is currently validated with Swift `6.2.4` and a manifest baseline of `swift-tools-version: 6.0`.
 
 ## Usage
 
@@ -39,9 +43,9 @@ func configure(_ app: Application) throws {
 }
 ```
 
-### Usage
+### Sending Metrics
 
-`dogstatsd` is available on both `Application` and `Request`.
+`dogstatsd` is available on both `Application` and `Request`:
 
 ```swift
 import Vapor
@@ -56,4 +60,12 @@ func routes(_ app: Application) throws {
     }
 }
 
+```
+
+## Testing
+
+Run the test suite with:
+
+```bash
+swift test
 ```
