@@ -34,6 +34,22 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
             ]
         ),
+        .executableTarget(
+            name: "DogstatsdNIOExample",
+            dependencies: [
+                .target(name: "Dogstatsd"),
+                .product(name: "NIOPosix", package: "swift-nio"),
+            ],
+            path: "Examples/DogstatsdNIOExample"
+        ),
+        .executableTarget(
+            name: "DogstatsdVaporExample",
+            dependencies: [
+                .target(name: "DogstatsdVapor"),
+                .product(name: "Vapor", package: "vapor"),
+            ],
+            path: "Examples/DogstatsdVaporExample"
+        ),
         .testTarget(
             name: "DogstatsdCoreTests",
             dependencies: [

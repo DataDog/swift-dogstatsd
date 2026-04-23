@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run NIO Example",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "swift run --scratch-path .build-devcontainer DogstatsdNIOExample"
+    },
+    {
+      "name": "Run Vapor Example",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "swift run --scratch-path .build-devcontainer DogstatsdVaporExample"
+    }
+  ]
+}

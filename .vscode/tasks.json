@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "swift: build",
+      "type": "shell",
+      "command": "swift build --scratch-path .build-devcontainer",
+      "group": "build"
+    },
+    {
+      "label": "swift: test",
+      "type": "shell",
+      "command": "swift test --scratch-path .build-devcontainer",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "swift: run nio example",
+      "type": "shell",
+      "command": "swift run --scratch-path .build-devcontainer DogstatsdNIOExample"
+    },
+    {
+      "label": "swift: run vapor example",
+      "type": "shell",
+      "command": "swift run --scratch-path .build-devcontainer DogstatsdVaporExample"
+    }
+  ]
+}

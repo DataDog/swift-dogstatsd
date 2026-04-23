@@ -50,7 +50,7 @@ The core package works on its own without Vapor:
 
 ```swift
 import Dogstatsd
-import NIO
+import NIOPosix
 
 let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
 let client = try NIODogstatsdClient(
@@ -99,3 +99,43 @@ Run the test suite with:
 ```bash
 swift test
 ```
+
+## Example Apps
+
+Two executable example apps are included for local verification and contributor onboarding:
+
+- `DogstatsdNIOExample`: a minimal pure-NIO client that sends a couple of example metrics.
+- `DogstatsdVaporExample`: a Vapor app that wires up `app.dogstatsd` and emits a metric on each request.
+
+Run them with:
+
+```bash
+swift run DogstatsdNIOExample
+swift run DogstatsdVaporExample
+```
+
+Both examples default to `DOGSTATSD_HOST=127.0.0.1` and `DOGSTATSD_PORT=8125`.
+
+## Devcontainer
+
+This repository includes a VS Code devcontainer in [.devcontainer/devcontainer.json](/Users/brian.floersch/dev/swift-dogstatsd/.devcontainer/devcontainer.json).
+
+After opening the repo in the container, the post-create step runs:
+
+```bash
+rm -rf .build-devcontainer && swift build --scratch-path .build-devcontainer && swift test --scratch-path .build-devcontainer
+```
+
+The container uses its own SwiftPM scratch path so Linux container builds do not corrupt the host macOS `.build` database.
+It also normalizes GitHub remotes to HTTPS during setup so SwiftPM does not depend on SSH keys inside the container.
+
+VS Code workspace helpers are also included in [launch.json](/Users/brian.floersch/dev/swift-dogstatsd/.vscode/launch.json) and [tasks.json](/Users/brian.floersch/dev/swift-dogstatsd/.vscode/tasks.json) for:
+
+- building the package
+- running the unit tests
+- running the NIO example app
+- running the Vapor example app
+
+Use the VS Code test task for unit tests rather than a launch configuration. The example apps are exposed in `launch.json` because they are meant to stay running, while tests are finite commands and should exit through the task runner.
+
+That gives contributors a ready-to-use Swift environment plus the included example apps and test suite.
