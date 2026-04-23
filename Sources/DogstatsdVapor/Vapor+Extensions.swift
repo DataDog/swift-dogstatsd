@@ -7,37 +7,56 @@ import Vapor
 
 public final class AsyncDogstatsdClient: DogstatsdClient, @unchecked Sendable {
     let app: Application
+    private let stateLock = NSLock()
+    private let fallbackSender: StatsdSender
+
     public var sender: StatsdSender {
-        guard let configuredClient = configuredClient else {
-            fatalError("Dogstatsd not configured")
+        stateLock.withLock {
+            configuredClient?.sender ?? fallbackSender
         }
-        return configuredClient.sender
     }
 
     var globalTags: [String] {
         NIODogstatsdClient.environmentGlobalTags
     }
 
+    private var storedConfig: ClientConfig?
     private var configuredClient: NIODogstatsdClient?
 
     public var config: ClientConfig? {
-        didSet {
-            guard let config = config else {
+        get {
+            stateLock.withLock {
+                storedConfig
+            }
+        }
+        set {
+            stateLock.withLock {
+                storedConfig = newValue
+            }
+
+            guard let config = newValue else {
                 return
             }
+
             do {
-                try configuredClient = NIODogstatsdClient(on: app.eventLoopGroup,
-                                                          clientConfig: config,
-                                                          eventLoop: app.eventLoopGroup.next(),
-                                                          globalTags: globalTags)
+                let client = try NIODogstatsdClient(
+                    on: app.eventLoopGroup,
+                    clientConfig: config,
+                    eventLoop: app.eventLoopGroup.next(),
+                    globalTags: globalTags
+                )
+                stateLock.withLock {
+                    configuredClient = client
+                }
             } catch {
-                print("Warning: Failed to init dogstatsd client: \(error)")
+                app.logger.warning("Failed to initialize Dogstatsd client: \(String(reflecting: error))")
             }
         }
     }
 
     init(app: Application) {
         self.app = app
+        self.fallbackSender = DisabledStatsdSender(globalTags: NIODogstatsdClient.environmentGlobalTags)
     }
 }
 
@@ -58,5 +77,23 @@ extension Application {
         }
 
         return storage[Key.self]!
+    }
+}
+
+private final class DisabledStatsdSender: StatsdSender, @unchecked Sendable {
+    let globalTags: [String]
+
+    init(globalTags: [String]) {
+        self.globalTags = globalTags
+    }
+
+    func sendRaw(metric: String) {}
+}
+
+private extension NSLock {
+    func withLock<T>(_ body: () throws -> T) rethrows -> T {
+        lock()
+        defer { unlock() }
+        return try body()
     }
 }

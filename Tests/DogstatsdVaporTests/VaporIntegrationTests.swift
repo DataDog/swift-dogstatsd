@@ -47,6 +47,23 @@ final class VaporIntegrationTests: XCTestCase {
         }
     }
 
+    func testUnconfiguredSenderFallsBackToEnvironmentTags() async throws {
+        try await withEnvironment([
+            "DD_ENV": "prod",
+            "DD_SERVICE": "checkout",
+        ]) {
+            try await withApplication { app in
+                XCTAssertEqual(
+                    Set(app.dogstatsd.sender.globalTags),
+                    Set([
+                        "env:prod",
+                        "service:checkout",
+                    ])
+                )
+            }
+        }
+    }
+
     private func withEnvironment(
         _ values: [String: String?],
         perform body: () async throws -> Void

@@ -20,6 +20,7 @@ enum DogstatsdNIOExample {
 
         client.increment("example.nio.started", tags: ["source:nio-example"])
         client.gauge("example.nio.port", value: Float64(port), tags: ["source:nio-example"])
+        try client.shutdown()
 
         print("Sent DogStatsD example metrics to \(host):\(port)")
     }

@@ -39,9 +39,22 @@ final class MetricEncodingTests: XCTestCase {
         XCTAssertEqual(encoded, "_sc|cache.health|1")
     }
 
+    func testServiceCheckEncodingEscapesNewlinesAndMessagePrefix() {
+        let encoded = DogstatsdMetric.serviceCheck(
+            name: "cache.health",
+            status: .warn,
+            timestamp: nil,
+            hostname: nil,
+            message: "first line\nm:second line"
+        ).toWire
+
+        XCTAssertEqual(encoded, "_sc|cache.health|1|m:first line\\nm\\:second line")
+    }
+
     func testEventEncodingUsesByteCountsAndMetadata() {
         let title = "deploy 🚀"
         let text = "all good\nline two"
+        let escapedText = "all good\\nline two"
         let encoded = DogstatsdMetric.event(
             title: title,
             text: text,
@@ -55,7 +68,7 @@ final class MetricEncodingTests: XCTestCase {
 
         XCTAssertEqual(
             encoded,
-            "_e{\(title.bytesCount),\(text.bytesCount)}:\(title)|\(text)|d:1700000000000|h:api-1|k:deploy|p:low|s:swift|t:error"
+            "_e{\(title.bytesCount),\(escapedText.bytesCount)}:\(title)|\(escapedText)|d:1700000000|h:api-1|k:deploy|p:low|s:swift|t:error"
         )
     }
 }

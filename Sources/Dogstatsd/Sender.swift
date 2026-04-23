@@ -12,26 +12,26 @@ public protocol StatsdSender {
 
 extension StatsdSender {
     public func send(metric: DogstatsdMetric, tags: [String], rate: Float) {
-        guard shouldSample(rate: rate) else {
+        guard shouldEmit(metric: metric, rate: rate) else {
             return
         }
-        
-        let allTags = globalTags + tags
-        
-        if allTags.isEmpty {
-            sendRaw(metric: metric.toWire)
-            return
-        }
-            
-        let wireTags = "#\(allTags.joined(separator: ","))"
-        sendRaw(metric: "\(metric.toWire)|\(wireTags)")
+
+        sendRaw(metric: metric.toWire(tags: globalTags + tags, rate: rate))
     }
     
-    private func shouldSample(rate: Float) -> Bool {
+    private func shouldEmit(metric: DogstatsdMetric, rate: Float) -> Bool {
+        guard metric.supportsSampling else {
+            return true
+        }
+
         if rate >= 1 {
             return true
         }
+
+        guard rate > 0 else {
+            return false
+        }
+
         return Float.random(in: 0..<1.0) < rate
     }
 }
-

@@ -5,6 +5,7 @@ import Foundation
 import NIO
 
 public final class NIODogstatsdClient: DogstatsdClient, @unchecked Sendable {
+    private let socketClient: SocketWriteClient
     public let sender: StatsdSender
 
     public init(
@@ -13,11 +14,17 @@ public final class NIODogstatsdClient: DogstatsdClient, @unchecked Sendable {
         eventLoop: EventLoop? = nil,
         globalTags: [String] = NIODogstatsdClient.environmentGlobalTags
     ) throws {
+        _ = eventLoop ?? eventLoopGroup.next()
+        let socketClient = try SocketWriteClient(on: eventLoopGroup, clientConfig: clientConfig)
+        self.socketClient = socketClient
         self.sender = EventLoopStatsdSender(
-            client: try SocketWriteClient(on: eventLoopGroup, clientConfig: clientConfig),
-            eventLoop: eventLoop ?? eventLoopGroup.next(),
+            client: socketClient,
             globalTags: globalTags
         )
+    }
+
+    public func shutdown() throws {
+        try socketClient.shutdown().wait()
     }
 
     public static var environmentGlobalTags: [String] {
@@ -43,18 +50,13 @@ final class EventLoopStatsdSender: StatsdSender, @unchecked Sendable {
     var globalTags: [String]
 
     private let client: SocketWriteClient
-    private let eventLoop: EventLoop
 
-    init(client: SocketWriteClient, eventLoop: EventLoop, globalTags: [String]) {
+    init(client: SocketWriteClient, globalTags: [String]) {
         self.client = client
-        self.eventLoop = eventLoop
         self.globalTags = globalTags
     }
 
     func sendRaw(metric: String) {
-        let client = self.client
-        eventLoop.execute {
-            client.send(payload: metric)
-        }
+        client.send(payload: metric)
     }
 }

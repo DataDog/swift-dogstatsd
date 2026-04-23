@@ -30,6 +30,38 @@ final class SenderAndClientTests: XCTestCase {
         XCTAssertEqual(sender.sentMetrics, [])
     }
 
+    func testSampledCountIncludesSampleRateInPayload() {
+        let sender = RecordingStatsdSender()
+
+        for _ in 0..<1_000 where sender.sentMetrics.isEmpty {
+            sender.send(
+                metric: .count(name: "checkout.request", value: 1),
+                tags: [],
+                rate: 0.5
+            )
+        }
+
+        XCTAssertEqual(sender.sentMetrics.last, "checkout.request:1|c|@0.5")
+    }
+
+    func testServiceCheckPlacesTagsBeforeMessage() {
+        let client = TestDogstatsdClient()
+
+        client.serviceCheck(
+            name: "database.health",
+            status: .critical,
+            timestamp: Date(timeIntervalSince1970: 1_535_776_860),
+            hostname: "db-1",
+            message: "Connection timed out",
+            tags: ["env:prod", "region:use1"]
+        )
+
+        XCTAssertEqual(
+            client.recordingSender.sentMetrics.last,
+            "_sc|database.health|2|d:1535776860|h:db-1|#env:prod,region:use1|m:Connection timed out"
+        )
+    }
+
     func testConvenienceMethodsEncodeExpectedPayloads() {
         let client = TestDogstatsdClient()
 

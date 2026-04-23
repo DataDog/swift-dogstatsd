@@ -57,9 +57,12 @@ let client = try NIODogstatsdClient(
     on: eventLoopGroup,
     clientConfig: .udp(address: "127.0.0.1", port: 8125)
 )
+defer { try? client.shutdown() }
 
 client.increment("custom.swift.metric", tags: ["env:prod"])
 ```
+
+For short-lived processes like CLIs or scripts, call `client.shutdown()` before tearing down the event loop group so queued metrics are flushed and the UDP channel closes cleanly.
 
 ### Vapor Integration
 
