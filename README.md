@@ -147,7 +147,3 @@ VS Code workspace helpers are also included in [launch.json](/Users/brian.floers
 - running the Vapor compatibility package
 - running the NIO example app
 - running the Vapor example app
-
-Use the VS Code test task for unit tests rather than a launch configuration. The example apps are exposed in `launch.json` because they are meant to stay running, while tests are finite commands and should exit through the task runner.
-
-That gives contributors a ready-to-use Swift environment plus the included example apps and test suite.
