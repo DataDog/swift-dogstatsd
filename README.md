@@ -1,7 +1,7 @@
 # Swift Dogstatsd
 ![Platforms](https://img.shields.io/badge/platforms-macOS%2010.15%2B-ff0000.svg?style=flat)
 [![Swift 5.9+](https://img.shields.io/badge/swift-5.9%2B-orange.svg?style=flat)](https://swift.org)
-[![Vapor 4.117.2](https://img.shields.io/badge/vapor-4.117.2-blue.svg?style=flat)](https://vapor.codes)
+[![Vapor 4.x](https://img.shields.io/badge/vapor-4.x-blue.svg?style=flat)](https://vapor.codes)
 
 ## Overview
 
