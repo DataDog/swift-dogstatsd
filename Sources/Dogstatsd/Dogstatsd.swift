@@ -29,29 +29,67 @@ public enum DogstatsdMetric {
     case event(title: String, text: String, timestamp: Date?, hostname: String?, aggregationKey: String?, priority: EventPriority?, sourceTypeName: String?, alertType: EventAlertType?)
     
     var toWire: String {
+        toWire(tags: [])
+    }
+
+    func toWire(tags: [String], rate: Float? = nil) -> String {
+        let wireTags = tags.isEmpty ? "" : "|#\(tags.joined(separator: ","))"
+        let sampleRate = formattedSampleRate(rate)
+
         switch self {
-        case let .count(name, value):           return "\(name):\(value)|c"
-        case let .gauge(name, value):           return "\(name):\(value)|g"
-        case let .histogram(name, value):       return "\(name):\(value)|h"
-        case let .distribution(name, value):    return "\(name):\(value)|d"
-        case let .set(name, value):             return "\(name):\(value)|s"
-        case let .timing(name, value):          return "\(name):\(value.toMs)|ms"
-        
+        case let .count(name, value):
+            return "\(name):\(value)|c\(sampleRate)\(wireTags)"
+        case let .gauge(name, value):
+            return "\(name):\(value)|g\(sampleRate)\(wireTags)"
+        case let .histogram(name, value):
+            return "\(name):\(value)|h\(sampleRate)\(wireTags)"
+        case let .distribution(name, value):
+            return "\(name):\(value)|d\(sampleRate)\(wireTags)"
+        case let .set(name, value):
+            return "\(name):\(value)|s\(sampleRate)\(wireTags)"
+        case let .timing(name, value):
+            return "\(name):\(value.toMs)|ms\(sampleRate)\(wireTags)"
+
         case let .serviceCheck(name, status, timestamp, hostname, message):
             return "_sc|\(name)|\(status.rawValue)"
             + timestamp.statsdFormat("|d:") { Int($0.timeIntervalSince1970) }
             + hostname.statsdFormat("|h:") { $0 }
-            + message.statsdFormat("|m:") { $0 }
+            + wireTags
+            + message.statsdFormat("|m:") { $0.serviceCheckEscaped }
             
         case let .event(title, text, timestamp, hostname, aggregationKey, priority, sourceTypeName, alertType):
-            return "_e{\(title.bytesCount),\(text.bytesCount)}:\(title)|\(text)"
-            + timestamp.statsdFormat("|d:") { $0.timeIntervalSince1970.toMs }
+            let escapedText = text.eventEscaped
+            return "_e{\(title.bytesCount),\(escapedText.bytesCount)}:\(title)|\(escapedText)"
+            + timestamp.statsdFormat("|d:") { Int($0.timeIntervalSince1970) }
             + hostname.statsdFormat("|h:") { $0 }
             + aggregationKey.statsdFormat("|k:") { $0 }
             + priority.statsdFormat("|p:") { $0.rawValue }
             + sourceTypeName.statsdFormat("|s:") { $0 }
             + alertType.statsdFormat("|t:") { $0 }
+            + wireTags
         }
+    }
+
+    var supportsSampling: Bool {
+        switch self {
+        case .count, .gauge, .histogram, .distribution, .set, .timing:
+            return true
+        case .serviceCheck, .event:
+            return false
+        }
+    }
+
+    private func formattedSampleRate(_ rate: Float?) -> String {
+        guard
+            supportsSampling,
+            let rate,
+            rate > 0,
+            rate < 1
+        else {
+            return ""
+        }
+
+        return "|@\(rate)"
     }
 }
 
@@ -201,5 +239,17 @@ fileprivate extension Optional {
 fileprivate extension TimeInterval {
     var toMs: Int {
         Int(self * 1_000)
+    }
+}
+
+private extension String {
+    var eventEscaped: String {
+        replacingOccurrences(of: "\n", with: "\\n")
+    }
+
+    var serviceCheckEscaped: String {
+        var escaped = replacingOccurrences(of: "\n", with: "\\n")
+        escaped = escaped.replacingOccurrences(of: "m:", with: "m\\:")
+        return escaped
     }
 }

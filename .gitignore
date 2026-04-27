@@ -1,5 +1,7 @@
 Packages
 .build
+.build-*
+.build-devcontainer
 xcuserdata
 *.xcodeproj
 DerivedData/
@@ -7,4 +9,4 @@ DerivedData/
 db.sqlite
 .swiftpm
 Package.pins
-Package.resolved
+Examples/DogstatsdNIOExample/Package.resolved

@@ -1,0 +1,12 @@
+{
+  "name": "swift-dogstatsd",
+  "image": "swift:6.2-noble",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
