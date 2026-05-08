@@ -5,5 +5,3 @@
 
 *                     @DataDog/agent-metric-pipelines
 
-# Documentation
-*.md                  @DataDog/documentation
